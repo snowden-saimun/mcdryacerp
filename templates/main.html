@@ -13,14 +13,14 @@
         
         /* বডি ডিজাইন এবং ব্যাকগ্রাউন্ড ইমেজ */
         body {
-            /* ব্যাকগ্রাউন্ড ইমেজের লিঙ্ক (আপনি চাইলে এটি পরিবর্তন করতে পারেন) */
+            /* ব্যাকগ্রাউন্ড ইমেজের লিঙ্ক */
             background-image: url('https://i.postimg.cc/T1qf0bxQ/Forum-Banner-original-2e16d0ba-fill-2560x1440-c0.jpg');
-            background-size: cover;       /* পুরো স্ক্রিন জুড়ে */
-            background-position: center;  /* মাঝখানে */
-            background-attachment: fixed; /* ফিক্সড থাকবে */
+            background-size: cover;       
+            background-position: center;  
+            background-attachment: fixed; 
             
-            /* লাইট মোডে ছবি এবং সাদা রঙের মিশ্রণ (যাতে লেখা পড়া যায়) */
-            background-color: rgba(248, 250, 252, 0.24); 
+            /* লাইট মোড ওভারলে */
+            background-color: rgba(248, 250, 252, 0.705); 
             background-blend-mode: overlay;
 
             font-family: 'Plus Jakarta Sans', sans-serif; 
@@ -29,23 +29,23 @@
 
         /* ডার্ক মোড ডিজাইন */
         body.dark-mode { 
-            --primary: #0e85fc; 
+            --primary: #54a8fc; 
             --accent: #60a5fa; 
-            --card: #104fb4; 
-            color: #0b73fc; 
+            --card: #3980f3; 
+            color: #4897ff; 
             
-            /* ডার্ক মোডে ছবি এবং কালো রঙের মিশ্রণ */
+            /* ডার্ক মোড ওভারলে */
             background-color: rgba(15, 23, 42, 0.95);
             background-blend-mode: multiply; 
         }
         
-        /* কার্ড ডিজাইন (স্বচ্ছ গ্লাস এফেক্ট) */
+        /* কার্ড ডিজাইন */
         .card { 
             background: var(--card); 
             border: none; 
             border-radius: 16px; 
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.61); 
-            backdrop-filter: blur(5px); /* হালকা ব্লার এফেক্ট */
+            backdrop-filter: blur(5px);
         }
         
         .currency-bdt::before { content: "৳ "; font-weight: 700; }
@@ -214,13 +214,29 @@
                     <h5 class="fw-bold mb-3">History</h5>
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
-                            <thead class="bg-light small text-muted"><tr><th>Date</th><th>Details</th><th class="text-end">Amount</th></tr></thead>
+                            <thead class="bg-light small text-muted">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Details</th>
+                                    <th class="text-end">Amount</th>
+                                    <th class="text-end no-print" style="width: 50px;">Action</th>
+                                </tr>
+                            </thead>
                             <tbody>
                                 {% for t in transactions %}
                                 <tr>
                                     <td>{{ t.date.strftime('%d %b, %y') }}</td>
                                     <td>{{ t.description }}</td>
-                                    <td class="text-end fw-bold currency-bdt {{ 'text-success' if t.amount > 0 else 'text-danger' }}">{{ t.amount|abs }}</td>
+                                    <td class="text-end fw-bold currency-bdt {{ 'text-success' if t.amount > 0 else 'text-danger' }}">
+                                        {{ t.amount|abs }}
+                                    </td>
+                                    <td class="text-end no-print">
+                                        <a href="/delete_transaction/{{ t.id }}" 
+                                           class="btn btn-sm btn-light text-danger border-0"
+                                           onclick="return confirm('Delete this? Balance will be reverted.')">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
