@@ -63,7 +63,7 @@ def get_common_data():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        # আপনার সেট করা ইউজারনেম ও পাসওয়ার্ড
+        # আপনার সেট করা ইউজারনেম ও পাসওয়ার্ড
         if request.form.get('username') == 'acmcdry' and request.form.get('password') == 'mcdry2026@@':
             session['logged_in'] = True
             return redirect(url_for('index'))
@@ -129,6 +129,23 @@ def delete_member(member_id):
     db.session.delete(Member.query.get(member_id))
     db.session.commit()
     return redirect(url_for('index'))
+
+# --- [NEW] Transaction Delete Route (ভুল সংশোধন করার জন্য) ---
+@app.route('/delete_transaction/<int:trans_id>')
+def delete_transaction(trans_id):
+    if 'logged_in' not in session: return redirect(url_for('login'))
+    
+    trans = Transaction.query.get_or_404(trans_id)
+    member = Member.query.get(trans.member_id)
+    
+    # ব্যালেন্স রিভার্স (Reverse) করা
+    member.balance -= trans.amount
+    
+    db.session.delete(trans)
+    db.session.commit()
+    
+    flash('লেনদেন মুছে ফেলা হয়েছে এবং ব্যালেন্স ঠিক করা হয়েছে!', 'warning')
+    return redirect(url_for('view_member', member_id=member.id))
 
 if __name__ == '__main__':
     # আপনার লোকাল আইপি দেখানোর জন্য
