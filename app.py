@@ -3,7 +3,9 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 import socket
-
+# PostgreSQL connection
+conn = psycopg2.connect("postgres://user:password@host:port/dbname")
+cur = conn.cursor()  # cursor দিয়ে query চালাবেন
 app = Flask(__name__)
 
 # --- কনফিগারেশন ---
@@ -208,4 +210,5 @@ if __name__ == '__main__':
     hostname = socket.gethostname()
     local_ip = socket.gethostbyname(hostname)
     print(f"\n >>> Mobile Link: http://{local_ip}:5000 \n")
+
     app.run(debug=True, host='0.0.0.0', port=5000)
